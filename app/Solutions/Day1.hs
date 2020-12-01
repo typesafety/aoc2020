@@ -5,10 +5,9 @@ module Solutions.Day1
 
 import Data.Text.Read (decimal)
 
-
 solve :: Text -> Maybe Integer
 solve =
-    fmap (uncurry (*))
+    fmap (\ (a, b, c) -> a * b * c)
     . findSum
     . getRights
     . map (second fst . decimal)
@@ -20,9 +19,14 @@ solve =
         Left _ : xs  -> getRights xs
         Right b : xs -> b : getRights xs
 
-    findSum :: [Integer] -> Maybe (Integer, Integer)
-    findSum ints = listToMaybe [(a, b) | a <- ints, b <- ints, a + b == 2020]
-
+    findSum :: [Integer] -> Maybe (Integer, Integer, Integer)
+    findSum ints = listToMaybe
+        [ (a, b, c)
+        | a <- ints
+        , b <- ints
+        , c <- ints
+        , a + b + c == 2020
+        ]
 
 solveIO :: FilePath -> IO ()
 solveIO fp =
