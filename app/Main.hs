@@ -15,6 +15,7 @@ import Misc.Misc (Part (P1, P2))
 
 import qualified Solutions.Day1 as D1
 import qualified Solutions.Day2 as D2
+import qualified Solutions.Day3 as D3
 
 
 main :: IO ()
@@ -31,6 +32,7 @@ main = do
     case day of
         1 -> D1.solveIO part inputFile
         2 -> D2.solveIO part inputFile
+        3 -> D3.solveIO part inputFile
         _ -> putTextLn "Invalid day." >> exitFailure
 
   where
