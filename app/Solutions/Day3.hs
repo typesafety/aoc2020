@@ -68,11 +68,6 @@ newtype Point = Point
 data Obj = Open | Tree
     deriving (Show, Eq)
 
-showObj :: Obj -> Char
-showObj = \case
-    Open -> '.'
-    Tree -> '#'
-
 -- | Read an object from a Char, crash on invalid character.
 readObj :: Char -> Obj
 readObj = \case
@@ -84,12 +79,6 @@ readObj = \case
 row in on the map -}
 type TreeRow = Seq Obj
 type TreeGrid = Seq TreeRow
-
-showGrid :: TreeGrid -> Text
-showGrid = unlines . toList . fmap showRow
-  where
-    showRow :: TreeRow -> Text
-    showRow = fromString . toList . fmap showObj
 
 parseGrid :: Text -> TreeGrid
 parseGrid = fromList . map pRow . lines
