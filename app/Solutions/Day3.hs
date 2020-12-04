@@ -1,4 +1,8 @@
-module Solutions.Day3 where
+module Solutions.Day3
+    ( solveIO
+    , solve1
+    , solve2
+    ) where
 
 import qualified Control.Monad.Writer.Strict as W
 import qualified Data.Sequence as S
@@ -7,12 +11,24 @@ import Misc.Misc (Part (..))
 
 
 solveIO :: Part -> FilePath -> IO ()
-solveIO part fp = case part of
-    P1 -> readFileText fp >>= print . solve
-    P2 -> putTextLn "Not yet solved!"
+solveIO part fp = readFileText fp >>= print . solver
+  where
+    solver :: (Text -> Int)
+    solver = case part of
+        P1 -> solve1
+        P2 -> solve2
 
-solve :: Text -> Int
-solve = flip count (Step (3, 1)) . parseGrid
+solve1 :: Text -> Int
+solve1 = solve (Step (3, 1))
+
+solve2 :: Text -> Int
+solve2 input = product $ map (`solve` input) stepSizes
+  where
+    stepSizes :: [Step]
+    stepSizes = map Step [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+
+solve :: Step -> Text -> Int
+solve step = flip count step . parseGrid
 
 count :: TreeGrid -> Step -> Int
 count grid (Step (dx, dy)) =
