@@ -5,6 +5,8 @@ module Solutions.Day1
 
 import Data.Text.Read (decimal)
 
+import Misc.Misc (Part (..))
+
 
 solve :: Text -> Maybe Integer
 solve =
@@ -23,7 +25,7 @@ solve =
         , a + b + c == 2020
         ]
 
-solveIO :: Int -> FilePath -> IO ()
+solveIO :: Part -> FilePath -> IO ()
 solveIO _part fp =
     readFileText fp
     >>= flip whenJust print . solve  -- The flip is important to decrease readability
