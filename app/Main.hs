@@ -12,6 +12,7 @@ import System.Console.ParseArgs
     )
 
 import qualified Solutions.Day1 as D1
+import qualified Solutions.Day2 as D2
 
 
 main :: IO ()
@@ -21,6 +22,7 @@ main = do
     let inputFile :: String = getRequiredArg args 2
     case day of
         1 -> D1.solveIO inputFile
+        2 -> D2.solveIO inputFile
         _ -> putTextLn "Invalid day." >> exitFailure
 
   where
