@@ -22,7 +22,7 @@ main = do
     let part :: Int = getRequiredArg args 2
     let inputFile :: String = getRequiredArg args 3
     case day of
-        1 -> D1.solveIO inputFile
+        1 -> D1.solveIO part inputFile
         2 -> D2.solveIO inputFile
         _ -> putTextLn "Invalid day." >> exitFailure
 

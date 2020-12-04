@@ -23,7 +23,7 @@ solve =
         , a + b + c == 2020
         ]
 
-solveIO :: FilePath -> IO ()
-solveIO fp =
+solveIO :: Int -> FilePath -> IO ()
+solveIO _part fp =
     readFileText fp
     >>= flip whenJust print . solve  -- The flip is important to decrease readability
