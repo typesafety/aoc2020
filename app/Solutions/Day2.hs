@@ -1,6 +1,5 @@
 module Solutions.Day2
     ( solveIO
-    , solve
     ) where
 
 import Relude.Extra (bimapBoth)
@@ -8,28 +7,46 @@ import Relude.Extra (bimapBoth)
 import qualified Text.Read
 import qualified Data.Text as T
 
+import Misc.Misc (Part (..))
 
-data Policy = Policy
-    { policyOccurrence :: (Int, Int)
-    , policyChar :: Char
-    }
+
+data Policy = Policy (Int, Int) Char
 
 newtype Password = Password
     { unPassword :: Text
     }
 
+newtype PassChecker = PassChecker (Policy -> Password -> Bool)
 
-solveIO :: FilePath -> IO ()
-solveIO fp = readFileText fp >>= print . solve
+solveIO :: Part -> FilePath -> IO ()
+solveIO part fp = readFileText fp >>= print . solve checker
+  where
+    checker :: PassChecker
+    checker = case part of
+        P1 -> checker1
+        P2 -> checker2
 
-solve :: Text -> Int
-solve = length . filter id . map (uncurry isValid . parseEntry) . lines
+solve :: PassChecker -> Text -> Int
+solve (PassChecker checker) =
+    length
+    . filter id
+    . map (uncurry checker . parseEntry)
+    . lines
 
-isValid :: Policy -> Password -> Bool
-isValid (Policy (minOcc, maxOcc) char) =
+checker1 :: PassChecker
+checker1 = PassChecker $ \ (Policy (minOcc, maxOcc) char) ->
     (`elem` [minOcc .. maxOcc])
     . T.length
     . T.filter (== char)
+    . unPassword
+
+checker2 :: PassChecker
+checker2 = PassChecker $ \ (Policy (pos1, pos2) char) ->
+    uncurry xor
+    . (\ pw ->
+        bimapBoth
+            ((== char) . flip ($) pw)
+            (flip T.index $ pos1 - 1, flip T.index $ pos2 - 1))
     . unPassword
 
 -- | Parse a line of text and return the password policy and the password.
