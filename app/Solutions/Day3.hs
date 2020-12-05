@@ -58,9 +58,7 @@ count grid (Step (dx, dy)) =
 {- | Horizontal movement on the left, vertical on the right. Positive values
 move to the right and down.
 -}
-newtype Step = Step
-    { unStep :: (Int, Int)
-    }
+newtype Step = Step (Int, Int)
 newtype Point = Point
     { unPoint :: (Int, Int)
     }
