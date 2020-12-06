@@ -27,6 +27,7 @@ executable aoc2020
                      , Solutions.Day2
                      , Solutions.Day3
                      , Solutions.Day4
+                     , Solutions.Day5
   default-language:    Haskell2010
   ghc-options:
     -Wall
