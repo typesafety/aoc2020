@@ -5,7 +5,7 @@ module Solutions.Day5
     ) where
 
 import Data.Foldable (maximum)
-import Relude.Extra (prev)
+import Relude.Extra (next)
 import Text.Read (read)
 import Text.ParserCombinators.ReadP ( ReadP, munch, readP_to_S )
 
@@ -22,7 +22,18 @@ solve1 =
     . lines
 
 solve2 :: Text -> Int
-solve2 = error "Not yet solved!"
+solve2 =
+    fromMaybe (-1)
+    . findMyId
+    . sort
+    . mapMaybe (\ l -> idOfSeat <$> (evalSeatCode =<< pSeatCode l))
+    . lines
+  where
+    findMyId :: [Int] -> Maybe Int
+    findMyId (x : y : xs)
+        | y - x == 2 = Just $ x + 1
+        | otherwise = findMyId (y : xs)
+    findMyId _ = Nothing
 
 idOfSeat :: Seat -> Int
 idOfSeat seat = seatRow seat * 8 + seatCol seat
@@ -33,7 +44,7 @@ type Shrinker = (Int, Int) -> (Int, Int)
 data Seat = Seat
     { seatRow :: Int
     , seatCol :: Int
-    } deriving (Show)
+    } deriving (Show, Ord, Eq)
 
 data SeatCode = SeatCode [RowC] [ColC]
     deriving (Show)
@@ -74,7 +85,7 @@ evalSeatCode (SeatCode row col) = Seat <$> evalRow row <*> evalCol col
 binarySearch :: forall a . (Int, Int) -> (a -> Shrinker) -> [a] -> Maybe Int
 binarySearch startSpan match instructions =
     let (low, high) = shrink instructions startSpan
-    in guarded ((== low) . prev) high
+    in guarded (\ v -> v == next low || high == 0) high
   where
     shrink :: [a] -> (Int, Int) -> (Int, Int)
     shrink [] span       = span
