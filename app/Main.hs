@@ -11,13 +11,14 @@ import System.Console.ParseArgs
     , parseArgsIO
     )
 
-import Misc.Misc (Part (P1, P2))
+import qualified Misc.Misc as Misc
 
 import qualified Solutions.Day1 as D1
 import qualified Solutions.Day2 as D2
 import qualified Solutions.Day3 as D3
 import qualified Solutions.Day4 as D4
 import qualified Solutions.Day5 as D5
+import qualified Solutions.Day6 as D6
 
 
 main :: IO ()
@@ -25,8 +26,8 @@ main = do
     args <- parseArgsIO ArgsComplete [argumentDay, argumentPart, argumentInputFile]
 
     part <- case getRequiredArg args 2 :: Int of
-                1 -> pure P1
-                2 -> pure P2
+                1 -> pure Misc.P1
+                2 -> pure Misc.P2
                 _ -> putTextLn "Invalid part." >> exitFailure
 
     let day :: Int = getRequiredArg args 1
@@ -37,6 +38,7 @@ main = do
         3 -> D3.solveIO part inputFile
         4 -> D4.solveIO part inputFile
         5 -> D5.solveIO part inputFile
+        6 -> Misc.solveIO (D6.solve1, D6.solve2 ) part inputFile
         _ -> putTextLn "Invalid day." >> exitFailure
 
   where
