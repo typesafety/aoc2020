@@ -14,6 +14,7 @@ executable aoc2020
   mixins:              base hiding (Prelude)
                      , relude (Relude as Prelude
                               , Relude.Extra
+                              , Relude.Unsafe
                               )
   build-depends:       base ^>=4.12.0.0
                      , relude ^>= 0.7.0.0
