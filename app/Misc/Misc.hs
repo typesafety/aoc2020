@@ -1,6 +1,10 @@
 module Misc.Misc
-    ( Part (..)
+    ( -- * Boilerplate for input and output
+      Part (..)
     , solveIO
+
+      -- * Other useful stuff
+    , if'
     ) where
 
 
@@ -22,3 +26,7 @@ solveIO (solver1, solver2) part fp =
     solver = case part of
         P1 -> Left solver1
         P2 -> Right solver2
+
+-- | If-then-else as a function.
+if' :: Bool -> a -> a -> a
+if' b x y = if b then x else y
