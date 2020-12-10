@@ -23,6 +23,7 @@ executable aoc2020
                      , containers == 0.6.*
                      , mtl == 2.2.*
                      , microlens-platform == 0.4.*
+                     , split == 0.2.*
   hs-source-dirs:      app
   other-modules:       Misc.Misc
                      , Solutions.Day1
