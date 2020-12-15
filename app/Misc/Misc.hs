@@ -6,7 +6,12 @@ module Misc.Misc
       -- * Other useful stuff
     , if'
     , applyN
+
+      -- * Particularly unsafe useful stuff
+    , unsafeReadText
     ) where
+
+import qualified Relude.Unsafe as Unsafe
 
 
 data Part = P1 | P2
@@ -36,3 +41,7 @@ if' b x y = if b then x else y
 applyN :: Int -> (a -> a) -> a -> a
 applyN 0 _ x = x
 applyN n f x = applyN (n - 1) f (f x)
+
+-- | Like "Text.Read.read", but for Text.
+unsafeReadText :: Read a => Text -> a
+unsafeReadText = Unsafe.read . toString
