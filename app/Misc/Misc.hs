@@ -5,6 +5,7 @@ module Misc.Misc
 
       -- * Other useful stuff
     , if'
+    , applyN
     ) where
 
 
@@ -30,3 +31,8 @@ solveIO (solver1, solver2) part fp =
 -- | If-then-else as a function.
 if' :: Bool -> a -> a -> a
 if' b x y = if b then x else y
+
+-- | Repeatedly apply a function n times.
+applyN :: Int -> (a -> a) -> a -> a
+applyN 0 _ x = x
+applyN n f x = applyN (n - 1) f (f x)
