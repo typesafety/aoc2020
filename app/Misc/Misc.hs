@@ -6,6 +6,7 @@ module Misc.Misc
       -- * Other useful stuff
     , if'
     , applyN
+    , applyNM
 
       -- * Particularly unsafe useful stuff
     , unsafeReadText
@@ -39,8 +40,16 @@ if' b x y = if b then x else y
 
 -- | Repeatedly apply a function n times.
 applyN :: Int -> (a -> a) -> a -> a
-applyN 0 _ x = x
-applyN n f x = applyN (n - 1) f (f x)
+applyN n f x
+    | n > 0  = applyN (n - 1) f (f x)
+    | n == 0 = x
+    | otherwise = error "applyN: negative integer"
+
+applyNM :: Monad m => Int -> (a -> m a) -> a -> m a
+applyNM n f x
+    | n > 0     = f x >>= applyNM (n - 1) f
+    | n == 0    = return x
+    | otherwise = error "applyNM: negative integer"
 
 -- | Like "Text.Read.read", but for Text.
 unsafeReadText :: Read a => Text -> a
