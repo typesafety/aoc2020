@@ -34,6 +34,7 @@ executable aoc2020
                      , Solutions.Day6
                      , Solutions.Day7
                      , Solutions.Day8
+                     , Solutions.Day9
                      , Solutions.Day10
                      , Solutions.Day12
                      , Solutions.Day15
