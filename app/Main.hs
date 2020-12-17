@@ -23,6 +23,7 @@ import qualified Solutions.Day7 as D7
 import qualified Solutions.Day8 as D8
 import qualified Solutions.Day9 as D9
 import qualified Solutions.Day10 as D10
+import qualified Solutions.Day11 as D11
 import qualified Solutions.Day12 as D12
 import qualified Solutions.Day15 as D15
 
@@ -49,6 +50,7 @@ main = do
         8 -> Misc.solveIO (D8.solve1, D8.solve2) part inputFile
         9 -> Misc.solveIO (D9.solve1, D9.solve2) part inputFile
         10 -> Misc.solveIO (D10.solve1, D10.solve2) part inputFile
+        11 -> Misc.solveIO (D11.solve1, D11.solve2) part inputFile
         12 -> Misc.solveIO (D12.solve1, D12.solve2) part inputFile
         15 -> Misc.solveIO (D15.solve1, D15.solve2) part inputFile
         _ -> putTextLn "Invalid day." >> exitFailure

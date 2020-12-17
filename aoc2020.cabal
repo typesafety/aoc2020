@@ -24,6 +24,7 @@ executable aoc2020
                      , mtl == 2.2.*
                      , microlens-platform == 0.4.*
                      , split == 0.2.*
+                     , matrix == 0.3.*
   hs-source-dirs:      app
   other-modules:       Misc.Misc
                      , Solutions.Day1
@@ -36,6 +37,7 @@ executable aoc2020
                      , Solutions.Day8
                      , Solutions.Day9
                      , Solutions.Day10
+                     , Solutions.Day11
                      , Solutions.Day12
                      , Solutions.Day15
   default-language:    Haskell2010
