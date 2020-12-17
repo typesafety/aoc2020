@@ -26,6 +26,7 @@ import qualified Solutions.Day10 as D10
 import qualified Solutions.Day11 as D11
 import qualified Solutions.Day12 as D12
 import qualified Solutions.Day15 as D15
+import qualified Solutions.Day17 as D17
 
 
 main :: IO ()
@@ -53,6 +54,7 @@ main = do
         11 -> Misc.solveIO (D11.solve1, D11.solve2) part inputFile
         12 -> Misc.solveIO (D12.solve1, D12.solve2) part inputFile
         15 -> Misc.solveIO (D15.solve1, D15.solve2) part inputFile
+        17 -> Misc.solveIO (D17.solve1, D17.solve2) part inputFile
         _ -> putTextLn "Invalid day." >> exitFailure
 
   where
