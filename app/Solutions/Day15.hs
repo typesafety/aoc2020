@@ -11,45 +11,57 @@ import qualified Data.Text as T
 import qualified Misc.Misc as Misc
 
 
-newtype Interval = Interval
-    { unInterval :: Int
-    } deriving Show
+newtype Turn = Turn
+    { unTurn :: Int
+    } deriving (Show, Eq)
 
-onInterval :: (Int -> Int) -> Interval -> Interval
-onInterval f = Interval . f . unInterval
+onTurn :: (Int -> Int) -> Turn -> Turn
+onTurn f = Turn . f . unTurn
 
-type History = IntMap Interval
+-- | Store what turn a number was spoken on last.
+type History = IntMap Turn
 
-start :: NonEmpty Int -> State History Interval
-start ns =
-    let (initNums, lastNum) :: ([Int], Int) = bimap init last $ dup ns
-    in mapM_ speakConst initNums >> pure (Interval lastNum)
+{- | Set up the history with the starting numbers, and return the 'last number spoken',
+and the upcoming turn.
+-}
+start :: NonEmpty Int -> State History (Int, Turn)
+start startingNums =
+    let (initNums, lastNum) :: ([Int], Int) = bimap init last $ dup startingNums
+    in (lastNum, ) <$> initHistory initNums
   where
-    speakConst :: Int -> State History Interval
-    speakConst toSpeak = do
-        modify' (IM.map (onInterval (+ 1)) . IM.insert toSpeak (Interval 0))
-        pure $ Interval toSpeak
+    initHistory :: [Int] -> State History Turn
+    initHistory = go (Turn 1)
+      where
+        go :: Turn -> [Int] -> State History Turn
+        go currTurn []       = pure currTurn
+        go currTurn (n : ns) = do
+            modify' (IM.insert n currTurn)
+            go (onTurn (+ 1) currTurn) ns
 
-speak :: Int -> State History Interval
-speak lastNum = do
-    toSpeak <- fromMaybe new <$> gets (IM.lookup lastNum)
-    modify' (IM.map (onInterval (+ 1)) . IM.insert lastNum new)
-    pure toSpeak
+speak :: Int -> Turn -> State History (Int, Turn)
+speak lastNum currTurn = do
+    diff <- gets (IM.lookup lastNum) >>= \case
+        Nothing              -> pure 0
+        Just (Turn lastSeen) -> pure $ unTurn currTurn - lastSeen
+    modify' (IM.insert lastNum currTurn)
+    pure (diff, onTurn (+ 1) currTurn)
+
+-- | Play until the specified turn.
+playUntil :: Turn -> NonEmpty Int -> (Int, History)
+playUntil untilTurn startingNums = usingState IM.empty $ do
+    (lastNum, currTurn) <- start startingNums
+    play lastNum currTurn
   where
-    new :: Interval
-    new = Interval 0
-
-playTurns :: Int -> NonEmpty Int -> (Interval, History)
-playTurns numTurns startingNums =
-    usingState IM.empty
-    $ start startingNums
-        >>= Misc.applyNM (numTurns - length startingNums) (speak . unInterval)
+    play :: Int -> Turn -> State History Int
+    play n t
+        | t == untilTurn = pure n
+        | otherwise = speak n t >>= uncurry play
 
 pStartingNums :: Text -> NonEmpty Int
 pStartingNums = fromList . map Misc.unsafeReadText . T.splitOn ","
 
 solve1 :: Text -> Int
-solve1 = unInterval . fst . playTurns 2020 . pStartingNums
+solve1 = fst . playUntil (Turn 2020) . pStartingNums
 
 solve2 :: Text -> Int
-solve2 = error "Not yet solved"
+solve2 = fst . playUntil (Turn 30000000) . pStartingNums
