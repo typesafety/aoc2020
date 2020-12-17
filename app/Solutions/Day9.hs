@@ -4,6 +4,7 @@ module Solutions.Day9
     ) where
 
 import Data.Sequence (Seq (..))
+import Relude.Extra (dup)
 
 import qualified Data.IntMap.Strict as IM
 import qualified Data.IntSet as IS
@@ -22,7 +23,7 @@ solve1 txt = firstInvalid rest preamble initSums
     initSums = pSums preamble
 
 solve2 :: Text -> Int
-solve2 = error "Not yet solved"
+solve2 = uncurry findWeakness . bimap solve1 pIntSeq . dup
 
 -- | "Sums" is a map from sums to possible combinations of terms.
 type Sums = IntMap (Set (Int, Int))
@@ -34,6 +35,27 @@ insertSum x y = IM.insertWith Set.union (x + y) (one (x, y))
 moveQueue :: Int -> Queue -> (Int, Queue)
 moveQueue _ Empty        = error "moveQueue: empty queue"
 moveQueue new (x :<| xs) = (x, xs :|> new)
+
+findWeakness :: Int -> Seq Int -> Int
+findWeakness _ Empty = error "NO WEAKNESS FOUND"
+findWeakness target nns@(_ :<| ns) =
+    maybe (findWeakness target ns) (sumEnds . Seq.unstableSort) $ tryRange target nns
+  where
+    sumEnds :: Seq Int -> Int
+    sumEnds xs = case (Seq.viewl xs, Seq.viewr xs) of
+        (lower Seq.:< _, _ Seq.:> upper) -> lower + upper
+        _ -> findWeakness target ns
+
+-- Could be a lot faster if already-tried sums were stored somehow.
+tryRange :: Int -> Seq Int -> Maybe (Seq Int)
+tryRange target = go 0
+  where
+    go :: Int -> Seq Int -> Maybe (Seq Int)
+    go _ Empty = Nothing
+    go acc (n :<| ns)
+        | acc < target = (n :<|) <$> go (acc + n) ns
+        | acc > target = Nothing
+        | otherwise    = Just Empty
 
 firstInvalid :: Seq Int -> Queue -> Sums -> Int
 firstInvalid Empty _ _         = error "firstInvalid: no invalid number found"
